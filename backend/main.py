@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, HttpUrl
 from langchain_community.document_loaders import YoutubeLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from fastapi.middleware.cors import CORSMiddleware
 
 class VideoAnalysisRequest(BaseModel):
     youtube_link: HttpUrl
@@ -9,8 +10,17 @@ class VideoAnalysisRequest(BaseModel):
 
 app = FastAPI()
 
-@app.post("/analyse_video")
+# Configure CORS
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = ["*"],
+    allow_credentials =True,
+    allow_methods = ["*"],
+    allow_headers = ["*"],
+)
+
+@app.post("/analyse_video")
 def analyse_video(request:VideoAnalysisRequest):
 
     loader = YoutubeLoader.from_youtube_url(str(request.youtube_link), add_video_info=True)
