@@ -38,7 +38,7 @@ def analyse_video(request:VideoAnalysisRequest):
 
     # Find key concepts
 
-    key_concepts = processor.find_key_concepts(result, group_size = 2)
+    key_concepts = processor.find_key_concepts(result, group_size = 10, verbose = True)
     
     return {
         "key_concepts": key_concepts
