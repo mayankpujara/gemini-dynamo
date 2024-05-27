@@ -28,18 +28,19 @@ genai_processor = GeminiProcessor(
 
 @app.post("/analyse_video")
 def analyse_video(request:VideoAnalysisRequest):
+    try:
+
+        processor = YoutubeProcessor(genai_processor=genai_processor)
+        result = processor.retrive_youtube_documents(str(request.youtube_link), verbose = True)
+
+        #summary = genai_processor.generate_document_summary(result, verbose = True)
+
+        # Find key concepts
+        key_concepts = processor.find_key_concepts(result, verbose = True)
     
-
-
-    processor = YoutubeProcessor(genai_processor=genai_processor)
-    result = processor.retrive_youtube_documents(str(request.youtube_link), verbose=True)
-
-    #summary = genai_processor.generate_document_summary(result, verbose = True)
-
-    # Find key concepts
-
-    key_concepts = processor.find_key_concepts(result, verbose = True)
-    
+    except Exception as e:
+        print(e)
+        return{"status": "Error", "message": str(e)}
     return {
         "key_concepts": key_concepts
     }

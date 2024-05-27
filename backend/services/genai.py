@@ -7,6 +7,7 @@ from langchain.prompts import PromptTemplate
 from tqdm import tqdm
 import json
 import logging
+import re
 
 # Configure log
 
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 class GeminiProcessor:
     
     def __init__(self, model_name, project):
-        self.model =    VertexAI(model_name=model_name, project=project)
+        self.model = VertexAI(model_name=model_name, project=project)
     
     def generate_document_summary(self, documents: list, **args):
 
@@ -66,7 +67,18 @@ class YoutubeProcessor:
             logger.info(f"{author}\n{length}\n{title}\n{total_size}\n{total_billable_characters}")
 
         return result
+    
+    def format_processed_concepts(self, processed_concepts):
+        final_output = {}
 
+        for concept in processed_concepts:
+            final_output.update(concept)
+        
+        # Converting the final output into required format
+
+        formatted_concept_list = [{"term": key, "definition": value} for key, value in final_output.items()]
+        return formatted_concept_list
+    
     def find_key_concepts(self, documents:list, sample_size: int = 0, verbose=False):
         # Iterate through all the documents of group size N and find the key concepts
         if sample_size > len(documents):
@@ -105,7 +117,7 @@ class YoutubeProcessor:
                 Find and define key concepts or terms found in the text:
                 {text}
 
-                Respond only in clean JSON format without any labels or additional text. The output exactly should look like this:
+                Respond in the following format as a JSON object without any backticks, separating each concept with a comma. The output exactly should look like this:
                 {{"concept1": "definition1", "concept2": "definition2", ...}}
                 """,
                 input_variables=["text"]
@@ -114,11 +126,32 @@ class YoutubeProcessor:
             # Chain creation
             chain = prompt | self.GeminiProcessor.model
 
+            def clean_json_string(json_str):
+                """Clean JSON String capturing only the value between curly braces
+
+                Args:
+                    json_str (str): uncleaned string 
+
+                Returns:
+                    str: cleaned string
+                """
+                # Define a regex pattern to match everything before and after the curly braces
+                pattern = r'^.*?({.*}).*$'
+
+                # Use re.findall to extract the JSON part from the string
+
+                matches = re.findall(pattern, json_str, re.DOTALL)
+                if matches:
+                    # If there's a match, return the first one (should be the JSON)
+                    return matches[0]
+                else:
+                    # If no match is found, return None
+                    return None
+
             try:
                 concept = chain.invoke({"text": group_content})
-                
-                concept = concept.replace("```json", "").replace("```", "").strip()
-
+                #cleaned_chain = clean_json_string(concept)
+                #if cleaned_chain:
                 batch_concepts.append(concept)
             except Exception as e:
                 logger.error(f"Failed to find concepts for group: {e}")
@@ -142,9 +175,11 @@ class YoutubeProcessor:
                 logging.info(f"Total group cost: {total_input_cost + total_output_cost}\n")
 
         # Convert each JSON string in batch concepts to a Python Dictionary
+        processed_concepts = [concept.replace("```json", "").replace("```", "").replace("\n```", "").replace("\n```json", "") for concept in batch_concepts]
         processed_concepts = [json.loads(concept) for concept in batch_concepts]
 
-        logging.info(f"Total Analysis cost: {batch_cost}")
+        logging.info(f"Total Analysis cost: ${batch_cost}")
+
         return processed_concepts
 
 
