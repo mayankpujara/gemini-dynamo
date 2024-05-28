@@ -16,7 +16,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins = ["*"],
     allow_credentials =True,
-    allow_methods = ["*"],
+    allow_methods = ["GET", "POST"],
     allow_headers = ["*"],
 )
 
@@ -37,13 +37,13 @@ def analyse_video(request:VideoAnalysisRequest):
 
         # Find key concepts
         key_concepts = processor.find_key_concepts(result, verbose = True)
+        return {
+        "key_concepts": key_concepts
+        }
     
     except Exception as e:
         print(e)
         return{"status": "Error", "message": str(e)}
-    return {
-        "key_concepts": key_concepts
-    }
 
 @app.get("/root")
 def health():

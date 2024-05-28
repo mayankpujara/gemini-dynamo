@@ -20,16 +20,18 @@ class GeminiProcessor:
         self.model = VertexAI(model_name=model_name, project=project)
     
     def generate_document_summary(self, documents: list, **args):
-
-        chain_type = "map_reduce" if len(documents) > 10 else "stuff"
-        chain = load_summarize_chain(
-            llm = self.model,
-            chain_type=chain_type,
-            
-            **args
-            )
-        
-        return chain.run(documents)
+        try: 
+            chain_type = "map_reduce" if len(documents) > 10 else "stuff"
+            chain = load_summarize_chain(
+                llm = self.model,
+                chain_type=chain_type,
+                
+                **args
+                )
+            return chain.run(documents)
+        except Exception as e:
+            logger.error(f"Failed to Generate Summary: {e}")
+            return None
     
     def count_tokens(self, docs:list):
         temp_model = GenerativeModel("gemini-1.0-pro")
@@ -117,7 +119,7 @@ class YoutubeProcessor:
                 Find and define key concepts or terms found in the text:
                 {text}
 
-                Respond in the following format as a JSON object without any backticks, separating each concept with a comma. The output exactly should look like this:
+                Respond in the following format as a JSON object without any backticks, labels or additional text and separating each concept with a comma. The output exactly should look like this:
                 {{"concept1": "definition1", "concept2": "definition2", ...}}
                 """,
                 input_variables=["text"]
@@ -181,7 +183,3 @@ class YoutubeProcessor:
         logging.info(f"Total Analysis cost: ${batch_cost}")
 
         return processed_concepts
-
-
-
-

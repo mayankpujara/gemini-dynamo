@@ -1,6 +1,14 @@
 .App {
-    padding: 20px;
+    padding: 28px;
+    align-items: center;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   }
+
+.Cards{
+  padding: 100px;
+  background-color: #154d54;
+  box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgb(173, 230, 227);
+}
   
   .inputContainer {
     display: flex;
@@ -8,28 +16,34 @@
     justify-content: center;
     margin-bottom: 20px;
     width: 100%;
-    justify-content: space-between;
     height: 40px;
   }
   .inputContainer button {
-    background-color: #000;
-    color: #fff;
+    background-color: #0d5a64;
+    color: #C4DFE6;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 0px 10px 10px 0px;
+    padding: 11px 20px;
     cursor: pointer;
+    font-weight: bold;
   }
   
   .inputField {
-    width: 100%;
+    width: 50%;
     height: 100%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    font-size: 16px;
-    margin-right: 20px;
+    background-color: #54aab5;
+    color: #C4DFE6;
+    border: none;
+    border-radius: 10px 0px 0px 10px;
+    font-size: 18px;
+    text-align: center; 
   }
   
+::placeholder {
+    text-align: center; 
+    color: #C4DFE6;
+    font-style: italic
+ }
   .flashcardsContainer {
     display: flex;
     flex-direction: column;
@@ -41,7 +55,8 @@
   .flashcard {
     width: 100%;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid;
+    border-color: #51aca2;
     border-radius: 5px;
     padding: 10px;
   }

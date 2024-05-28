@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import axios from "axios";
 import Flashcard from "./Flashcard.jsx";
 import './Flashcard.css'
+import './App.css'
 
 function App(){
   const [youtubeLink, setYoutubeLink] = useState("");
@@ -24,15 +25,11 @@ function App(){
       const data = response.data
 
       if (data.key_concepts && Array.isArray(data.key_concepts)) {
-        const transformed_concepts = data.key_concepts.map((concept) => {
-          const term = Object.keys(concept)[0];
-          const definition = concept[term];
-          return {term, definition};
-        });
-      setKeyConcepts(transformed_concepts);
+        setKeyConcepts(data.key_concepts);
       }
       else{
-        console.error("Data does not contain keyConcepts:", data);
+        console.error("Data does not contain key concepts:", data);
+        console.log(data.key_concepts)
         setKeyConcepts([]);
       }
       
@@ -51,8 +48,12 @@ function App(){
 
 
   return (
+    <div className="root">
+      <h1>Dynamo Cards</h1>
+      <hr></hr>
     <div className="App">
-      <h1>YouTube Link to Flashcards Generator</h1> 
+      <div className="Cards">      
+      <h1>YouTube URL to Flashcards Generator</h1> 
       <div className="inputContainer">
         <input
           type = "text"
@@ -76,6 +77,8 @@ function App(){
           />
         ))}
       </div>
+      </div>
+    </div>
     </div>
   )
 }
