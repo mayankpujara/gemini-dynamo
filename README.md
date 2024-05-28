@@ -20,20 +20,22 @@ The project addresses the challenging task of analyzing lengthy YouTube transcri
 - npm or yarn
   
 ## Project Structure
+- Provides a clear overview of the project components
+  ```sh
+  root/
+    │
+    ├── backend/                 # Contains the FastAPI application
+    │     ├── Service/
+                ├── main.py              
+    │         ├── genai.py             # Core processing scripts for video analysis
+    │         └── requirements.txt     # Project Dependencies
+    │
+    └── frontend/dynamocards               # Houses the React application
+              ├── src/                 # Source files for the frontend
+              ├── public/              # Public assets and HTML template
+              ├── package.json         # NPM dependencies and scripts
+              └── README.md            # Frontend documentation
 
-root/
-│
-├── backend/                 # Contains the FastAPI application
-│   ├── Service/
-          ├── main.py              
-│   ├── genai.py             # Core processing scripts for video analysis
-│   └── requirements.txt     # Project Dependencies
-│
-└── frontend/dynamocards               # Houses the React application
-    ├── src/                 # Source files for the frontend
-    ├── public/              # Public assets and HTML template
-    ├── package.json         # NPM dependencies and scripts
-    └── README.md            # Frontend documentation
 
 ## Setting Up
 
