@@ -25,7 +25,7 @@ The project addresses the challenging task of analyzing lengthy YouTube transcri
   root/
     │
     ├── backend/                 # Contains the FastAPI application
-    │     ├── Service/
+    │     ├── services/
                 ├── main.py              
     │         ├── genai.py             # Core processing scripts for video analysis
     │         └── requirements.txt     # Project Dependencies
