@@ -1,8 +1,7 @@
 import React, {useState} from "react";
 import axios from "axios";
 import Flashcard from "./Flashcard.jsx";
-import './Flashcard.css'
-import './App.css'
+import './style.css'
 
 function App(){
   const [youtubeLink, setYoutubeLink] = useState("");
@@ -49,11 +48,12 @@ function App(){
 
   return (
     <div className="root">
-      <h1>Dynamo Cards</h1>
+      <h1 className="heading">Welcome to Dynamo Cards 👋</h1>
       <hr></hr>
     <div className="App">
       <div className="Cards">      
-      <h1>YouTube URL to Flashcards Generator</h1> 
+        <h1>FlashCards Generator</h1> 
+        <h3>Creates flash cards from a YouTube video URL</h3>
       <div className="inputContainer">
         <input
           type = "text"
@@ -62,11 +62,10 @@ function App(){
           onChange = {handleLinkChange}
           className="inputField"
         />
-        <button onClick={sendLink} disable={isLoading}>
+        <button onClick={sendLink} disable={isLoading} className="Generate">
           {isLoading ? 'Loading..': 'Generate Flashcards'}
         </button>
       </div>
-
       <div className="flashcardsContainer">
         {keyConcepts.map((concept, index) => (
           <Flashcard

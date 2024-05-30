@@ -16,7 +16,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins = ["*"],
     allow_credentials =True,
-    allow_methods = ["GET", "POST"],
+    allow_methods = ["*"],
     allow_headers = ["*"],
 )
 
@@ -42,7 +42,7 @@ def analyse_video(request:VideoAnalysisRequest):
         }
     
     except Exception as e:
-        print(e)
+        print("Final Error", e)
         return{"status": "Error", "message": str(e)}
 
 @app.get("/root")

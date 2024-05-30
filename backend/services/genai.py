@@ -20,18 +20,16 @@ class GeminiProcessor:
         self.model = VertexAI(model_name=model_name, project=project)
     
     def generate_document_summary(self, documents: list, **args):
-        try: 
-            chain_type = "map_reduce" if len(documents) > 10 else "stuff"
-            chain = load_summarize_chain(
-                llm = self.model,
-                chain_type=chain_type,
-                
-                **args
-                )
-            return chain.run(documents)
-        except Exception as e:
-            logger.error(f"Failed to Generate Summary: {e}")
-            return None
+
+        chain_type = "map_reduce" if len(documents) > 10 else "stuff"
+        chain = load_summarize_chain(
+            llm = self.model,
+            chain_type=chain_type,
+            
+            **args
+            )
+        
+        return chain.run(documents)
     
     def count_tokens(self, docs:list):
         temp_model = GenerativeModel("gemini-1.0-pro")
@@ -81,7 +79,7 @@ class YoutubeProcessor:
         formatted_concept_list = [{"term": key, "definition": value} for key, value in final_output.items()]
         return formatted_concept_list
     
-    def find_key_concepts(self, documents:list, sample_size: int = 0, verbose=False):
+    def find_key_concepts(self, documents:list, sample_size: int = 0, verbose=True):
         # Iterate through all the documents of group size N and find the key concepts
         if sample_size > len(documents):
             raise ValueError("Group size is larger than the number of documents")
@@ -119,7 +117,7 @@ class YoutubeProcessor:
                 Find and define key concepts or terms found in the text:
                 {text}
 
-                Respond in the following format as a JSON object without any backticks, labels or additional text and separating each concept with a comma. The output exactly should look like this:
+                Respond in the following format as a JSON object without any backticks, separating each concept with a comma. The output exactly should look like this:
                 {{"concept1": "definition1", "concept2": "definition2", ...}}
                 """,
                 input_variables=["text"]
@@ -152,9 +150,10 @@ class YoutubeProcessor:
 
             try:
                 concept = chain.invoke({"text": group_content})
-                #cleaned_chain = clean_json_string(concept)
+                cleaned_concept = concept.replace("```json", "").replace("```", "").replace("\n```", "").replace("\n```json", "") 
                 #if cleaned_chain:
-                batch_concepts.append(concept)
+                logger.info(cleaned_concept)
+                batch_concepts.append(cleaned_concept)
             except Exception as e:
                 logger.error(f"Failed to find concepts for group: {e}")
 
@@ -177,9 +176,15 @@ class YoutubeProcessor:
                 logging.info(f"Total group cost: {total_input_cost + total_output_cost}\n")
 
         # Convert each JSON string in batch concepts to a Python Dictionary
-        processed_concepts = [concept.replace("```json", "").replace("```", "").replace("\n```", "").replace("\n```json", "") for concept in batch_concepts]
-        processed_concepts = [json.loads(concept) for concept in batch_concepts]
+        processed_concepts = []
+        for concept in batch_concepts:
+            try:
+                concept_dict = json.loads(concept)
+                processed_concepts.append(concept_dict)
+            except Exception as e:
+                logger.error(f"Failed to convert JSON to dictionary: {e}")
+        #processed_concepts = [json.loads(concept) for concept in batch_concepts]
 
         logging.info(f"Total Analysis cost: ${batch_cost}")
 
-        return processed_concepts
+        return self.format_processed_concepts(processed_concepts)
