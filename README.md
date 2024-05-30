@@ -76,4 +76,5 @@ The project addresses the challenging task of analyzing lengthy YouTube transcri
   ![Key Concept Refactoring and Output Formatting](https://github.com/mayankpujara/gemini-dynamo/assets/76840933/1351bcbe-9ef3-4606-a54f-9799b854b0e8)
 
 - Frontend
-  ![Frontend Integration and Flashcard Handling](https://github.com/mayankpujara/gemini-dynamo/assets/76840933/17a940cc-f624-4b35-9ed4-371a65c74072)
+  ![Dynamo Cards Demonstration](https://github.com/mayankpujara/gemini-dynamo/assets/76840933/87d31829-5f92-4523-b86b-7b2e36a59bd4)
+
